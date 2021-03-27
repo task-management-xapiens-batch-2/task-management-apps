@@ -29,7 +29,7 @@ const Icon = ({name, focused, size, title}) => (
       borderRadius: 25,
       height: '100%',
       paddingLeft: 10,
-      paddingRight: 10
+      paddingRight: 10,
     }}>
     <IconTabs
       name={name}
@@ -65,6 +65,7 @@ const RCard = (props, {item}) => {
 const RHeaderMain = props => {
   return (
     <View style={styles.containerHeaderMain}>
+      <Text style={{color: RColor.white}}>Hello</Text>
       <Text style={styles.headerTitleMain}>{props.title}</Text>
       <TouchableOpacity style={{position: 'absolute', right: '8%'}}>
         <CustomIcon
@@ -74,6 +75,14 @@ const RHeaderMain = props => {
           size={props.iconSize}
         />
       </TouchableOpacity>
+      {/* <TouchableOpacity style={{position: 'absolute', right: '8%'}}>
+        <IconTabs
+          style={{color: RColor.white}}
+          onPress={props.onPressRight}
+          name={props.iconNameRight}
+          size={props.iconSizeRight}
+        />
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -126,15 +135,17 @@ const RButtonLoading = props => {
 const RTextInput = props => {
   return (
     <View>
+      <Text style={{marginLeft:'10%', color:RColor.gray}}>{props.title}</Text>
       <TextInput
-        style={[styles.txtInput, props.CStyle]}
+        style={styles.txtInput}
         onChangeText={props.onChangeText}
         placeholder={props.placeholder}
         value={props.value}
         onBlur={props.onBlur}
         onFocus={props.onFocus}
+        secureTextEntry={props.secureTextEntry}
       />
-      {props.error && <Text>{props.error}</Text>}
+    {<Text style={[{color:'red', marginLeft:'12%', marginBottom:5},props.CStyle]}>{props.error}</Text>}
     </View>
   );
 };
@@ -190,9 +201,11 @@ const styles = StyleSheet.create({
   txtInput: {
     alignSelf: 'center',
     width: '80%',
+    paddingLeft: 30,
+    paddingRight: 30,
     height: 50,
     borderRadius: 15,
-    paddingLeft: 30,
+    color:RColor.blue,
     borderColor: RColor.blue,
     backgroundColor: RColor.lightBlue,
   },
