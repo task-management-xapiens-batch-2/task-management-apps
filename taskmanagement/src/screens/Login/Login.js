@@ -8,15 +8,38 @@ import {
   RTextInput,
   RButton,
 } from '@reusable';
+import {validateEmail, validatePassword} from '@utils';
 const Login = ({navigation}) => {
   const [loading, setLoading] = useState(false);
-  //   const [focus, setFocus] = useState(false);
-  //   onFocus={() => setFocus(true)}
-  //   onBlur={() => setFocus(false)}
-  console.log({navigation});
-  const onLoginPress=()=>{
-    navigation.navigate('Tabs')
-  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const onLoginPress = () => {
+    if(!emailValidator()&&!passwordValidator()){
+      
+    }
+  };
+  const emailValidator = () => {
+    if (email === '') {
+      setEmailError('email field cant be empty');
+    } else if (!validateEmail(email)) {
+      setEmailError('email format didnt correct');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const passwordValidator = () => {
+    if (password === '') {
+      setPasswordError('password field cant be empty');
+    } else if (validatePassword(password) > 6) {
+      setPasswordError('password must greater than 6');
+    } else {
+      setPasswordError('');
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.txtContainer}>
@@ -26,9 +49,28 @@ const Login = ({navigation}) => {
         </Text>
       </View>
       <View style={styles.containerBody}>
-        <RTextInput CStyle={{marginBottom: 15}} />
-        <RTextInput CStyle={{marginBottom: 20}} />
-        {loading ? <RButtonLoading /> : <RButton  onPress={()=>onLoginPress()} title="Login" />}
+        <RTextInput
+          CStyle={{marginBottom: 15}}
+          title={'Email'}
+          value={email}
+          onChangeText={text => setEmail(text)}
+          onBlur={() => emailValidator()}
+          error={emailError}
+        />
+        <RTextInput
+          CStyle={{marginBottom: 20}}
+          title={'Password'}
+          value={password}
+          onBlur={() => passwordValidator()}
+          onChangeText={text => setPassword(text)}
+          error={passwordError}
+          secureTextEntry={true}
+        />
+        {loading ? (
+          <RButtonLoading />
+        ) : (
+          <RButton onPress={() => onLoginPress()} title="Login" />
+        )}
       </View>
     </View>
   );

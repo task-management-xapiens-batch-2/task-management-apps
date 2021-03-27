@@ -5,7 +5,10 @@ import {RColor, RHeaderMain, RIcon, RCard} from '../../components';
 const Done = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <RHeaderMain title={'Alfian'} iconName={'envelope'} iconSize={30} />
+      <RHeaderMain title={'Alfian'}
+       iconName={'envelope'}
+       iconSize={30}
+       />
       <Text style={styles.txtTitle}>TASK LIST</Text>
       <RCard CStyle={styles.cardColor} onPress={()=>navigation.navigate('Detail Done')}/>
       <RCard CStyle={styles.cardColor} onPress={()=>navigation.navigate('Detail Done')}/>
