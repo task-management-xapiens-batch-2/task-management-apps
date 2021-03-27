@@ -11,4 +11,5 @@ const LOGIN_WORKER = gql`
     }
   }
 `;
+
 export {LOGIN_WORKER};
