@@ -1,9 +1,17 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {RColor} from '@reusable';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Splash = ({navigation}) => {
-  setTimeout(() => {navigation.navigate('Login')}, 2000);
+  useEffect(async () => {
+    const rawDataUser = await AsyncStorage.getItem('data');
+    const dataUser = JSON.parse(rawDataUser);
+    console.log({dataUser});
+    setTimeout(()=>{
+      dataUser.login?navigation.navigate('Tabs'):navigation.navigate('Login')
+    },3000)
+  },[]);
   return (
     <View style={styles.container}>
       <View style={styles.topIcon} />

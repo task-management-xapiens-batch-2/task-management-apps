@@ -1,26 +1,46 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useMutation} from '@apollo/client';
 import {View, Text, StyleSheet} from 'react-native';
-import {
-  RButtonLoading,
-  RLoader,
-  Icon,
-  RColor,
-  RTextInput,
-  RButton,
-} from '@reusable';
+import AsyncStorage from '@react-native-community/async-storage';
+import {RButtonLoading, RColor, RTextInput, RButton} from '@reusable';
 import {validateEmail, validatePassword} from '@utils';
+import {LOGIN_WORKER} from '@config';
+
 const Login = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginWorker, {data, loading, error}] = useMutation(LOGIN_WORKER);
+  const [email, setEmail] = useState('Odie.Hills@gmail.com');
+  const [password, setPassword] = useState('AXwxYMPTfS534Fi');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
+  const [isLogin, setIsLogin] = useState(false);
+  useEffect(() => {
+    if (data !== undefined) {
+      setIsLogin(true)
+      const dataUser = {
+        login:isLogin,
+        data: data.Login
+      };
+      AsyncStorage.setItem('data', JSON.stringify(dataUser));
+    }
+    console.log({data});
+  }, [data]);
   const onLoginPress = () => {
-    if(!emailValidator()&&!passwordValidator()){
-      
+    try {
+      emailValidator();
+      passwordValidator();
+      if (emailError == '' && passwordError == '') {
+        loginWorker({
+          variables: {
+            email: email,
+            password: password,
+          },
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
+
   const emailValidator = () => {
     if (email === '') {
       setEmailError('email field cant be empty');
@@ -34,7 +54,7 @@ const Login = ({navigation}) => {
   const passwordValidator = () => {
     if (password === '') {
       setPasswordError('password field cant be empty');
-    } else if (validatePassword(password) > 6) {
+    } else if (validatePassword(password) < 6) {
       setPasswordError('password must greater than 6');
     } else {
       setPasswordError('');
