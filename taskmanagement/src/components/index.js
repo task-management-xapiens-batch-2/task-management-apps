@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TextInput,
   ActivityIndicator,
+  ScrollView,
+  Button,
 } from 'react-native';
 import CustomIcon from 'react-native-vector-icons/SimpleLineIcons';
 import IconTabs from 'react-native-vector-icons/FontAwesome';
@@ -47,42 +49,57 @@ const Icon = ({name, focused, size, title}) => (
   </View>
 );
 
-const RCard = (props, {item}) => {
-  return (
-    <TouchableOpacity
-      onPress={props.onPress}
-      style={[styles.containerCard, props.CStyle]}>
-      <View>
-        <Text style={styles.txtTilteCard}>Judul</Text>
-        <Text style={styles.txtDateCard}>20-12-2021</Text>
-      </View>
-      <TouchableOpacity>
-        <RIcon name={props.iconName} size={20} />
-      </TouchableOpacity>
-    </TouchableOpacity>
-  );
-};
 const RHeaderMain = props => {
   return (
     <View style={styles.containerHeaderMain}>
       <Text style={{color: RColor.white}}>Hello</Text>
       <Text style={styles.headerTitleMain}>{props.title}</Text>
-      <TouchableOpacity style={{position: 'absolute', right: '8%'}}>
+      <TouchableOpacity
+        onPress={props.onPress}
+        style={{position: 'absolute', right: '20%'}}>
         <CustomIcon
           style={{color: RColor.white}}
-          onPress={props.onPress}
           name={props.iconName}
           size={props.iconSize}
         />
       </TouchableOpacity>
-      {/* <TouchableOpacity style={{position: 'absolute', right: '8%'}}>
+      <TouchableOpacity style={{position: 'absolute', right: '8%'}}>
         <IconTabs
           style={{color: RColor.white}}
           onPress={props.onPressRight}
           name={props.iconNameRight}
           size={props.iconSizeRight}
         />
-      </TouchableOpacity> */}
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const RDetailCard = props => {
+  return (
+    <View style={[styles.containerDetailCard, props.CardStyle]}>
+      {props.loading ? (
+        <View style={styles.loadingContainer}>
+          <View style={styles.loading}>
+            <Text style={styles.loadingText}>{(4 / 5) * 100} %</Text>
+          </View>
+        </View>
+      ) : (
+        <></>
+      )}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={styles.txtTitle}>{props.title}</Text>
+        <Text style={styles.txtDate}>Start : from {props.sDate}</Text>
+        <Text style={styles.txtDate}>Until : {props.dDate}</Text>
+        <Text style={styles.txtDetail}>{props.description}</Text>
+        {props.attachments ? (
+          <View>
+            <Text style={styles.attachments}>Attachments</Text>
+          </View>
+        ) : (
+          <></>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -135,7 +152,7 @@ const RButtonLoading = props => {
 const RTextInput = props => {
   return (
     <View>
-      <Text style={{marginLeft:'10%', color:RColor.gray}}>{props.title}</Text>
+      <Text style={{marginLeft: '10%', color: RColor.gray}}>{props.title}</Text>
       <TextInput
         style={styles.txtInput}
         onChangeText={props.onChangeText}
@@ -145,7 +162,15 @@ const RTextInput = props => {
         onFocus={props.onFocus}
         secureTextEntry={props.secureTextEntry}
       />
-    {<Text style={[{color:'red', marginLeft:'12%', marginBottom:5},props.CStyle]}>{props.error}</Text>}
+      {
+        <Text
+          style={[
+            {color: 'red', marginLeft: '12%', marginBottom: 5},
+            props.CStyle,
+          ]}>
+          {props.error}
+        </Text>
+      }
     </View>
   );
 };
@@ -161,7 +186,6 @@ const RIcon = props => {
 };
 
 export {
-  RCard,
   RHeaderMain,
   RHeader,
   RButtonLoading,
@@ -171,9 +195,72 @@ export {
   RTextInput,
   RColor,
   RButton,
+  RDetailCard,
 };
 
 const styles = StyleSheet.create({
+  // LOADING
+  loadingContainer: {
+    width: '90%',
+    height: 15,
+    borderWidth: 4,
+    borderRadius: 15 / 2,
+    marginBottom: 15,
+    borderColor: RColor.blue,
+    backgroundColor: RColor.lightBlue,
+    justifyContent: 'center',
+  },
+  loading: {
+    width: `${(4 / 5) * 100}%`,
+    height: 15,
+    borderRadius: 15 / 2,
+    backgroundColor: RColor.blue,
+    justifyContent: 'center',
+    paddingLeft: 15,
+  },
+  loadingText: {
+    color: RColor.white,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  // ATTACHMENTS
+  attachments: {
+    fontSize: 16,
+    marginTop: 10,
+    fontWeight: 'bold',
+  },
+  // CARD DETAIL
+  containerDetailCard: {
+    marginTop: '10%',
+    marginLeft: '5%',
+    marginRight: '5%',
+    marginBottom: '5%',
+    borderRadius: 20,
+    alignItems: 'center',
+    paddingTop: 40,
+    paddingLeft: '5%',
+    paddingRight: '5%',
+    paddingBottom: '5%',
+    backgroundColor: RColor.white,
+  },
+  txtTitle: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  txtDate: {
+    fontWeight: '500',
+    textAlign: 'center',
+    fontSize: 15,
+    color: RColor.green,
+  },
+  txtDetail: {
+    fontWeight: '500',
+    fontSize: 15,
+    color: RColor.gray,
+    marginTop: 15,
+  },
   // HEADER
   containerHeader: {
     justifyContent: 'center',
@@ -193,8 +280,9 @@ const styles = StyleSheet.create({
     paddingLeft: '8%',
   },
   headerTitleMain: {
-    fontSize: 30,
+    fontSize: 22,
     color: RColor.white,
+    fontWeight: 'bold',
   },
 
   // TXT INPUT
@@ -205,7 +293,7 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     height: 50,
     borderRadius: 15,
-    color:RColor.blue,
+    color: RColor.blue,
     borderColor: RColor.blue,
     backgroundColor: RColor.lightBlue,
   },
@@ -223,26 +311,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: RColor.white,
-  },
-  // CARD
-  containerCard: {
-    width: '90%',
-    height: 70,
-    borderRadius: 15,
-    paddingLeft: 30,
-    paddingRight: 30,
-    marginBottom: 10,
-    backgroundColor: RColor.white,
-    alignSelf: 'center',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  txtTilteCard: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  txtDateCard: {
-    color: RColor.green,
   },
 });
