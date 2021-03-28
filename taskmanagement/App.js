@@ -103,15 +103,20 @@ const BottomTabs = () => {
   );
 };
 const StackList = () => {
-  const [data, setData] = useState('');
+  const [login, setLogin] = useState(false);
   useEffect(async () => {
-    const rawDataUser = await AsyncStorage.getItem('data');
-    const dataUser = JSON.parse(rawDataUser);
-    setData(dataUser);
-  }, []);
+    const isLogin = await AsyncStorage.getItem('isLogin');
+    if(isLogin!==null){
+      setLogin(true);
+      console.log({login});
+    }else{
+      setLogin(false)
+      console.log({login});
+    }
+  });
   return (
     <NavigationContainer>
-      {data.login ? (
+      {login? (
         <Stack.Navigator>
           <Stack.Screen
             name="Splash"
