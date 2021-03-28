@@ -5,35 +5,36 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {RButtonLoading, RColor, RTextInput, RButton} from '@reusable';
 import {validateEmail, validatePassword} from '@utils';
 import {LOGIN_WORKER} from '@config';
+import {useDispatch, useSelector} from 'react-redux';
+import loginAction from '../../redux/Auth/actions'
 
 const Login = ({navigation}) => {
-  const [loginWorker, {data, loading, error}] = useMutation(LOGIN_WORKER);
   const [email, setEmail] = useState('Odie.Hills@gmail.com');
   const [password, setPassword] = useState('AXwxYMPTfS534Fi');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [isLogin, setIsLogin] = useState(false);
-  useEffect(() => {
-    console.log({data});
-    console.log({isLogin});
+  const dispatch = useDispatch();
 
-    if (data !== undefined) {
-      setIsLogin(true)
-      AsyncStorage.setItem('data', JSON.stringify(data));
-      AsyncStorage.setItem('isLogin', JSON.stringify(isLogin));
-    }
-  }, [data]);
+  const {list, loading, isLogin} = useSelector(state => {
+    return {
+      list: state.auth.list,
+      loading: state.auth.loading,
+      isLogin: state.auth.isLogin,
+    };
+  });
+  console.log('LOGIN', {list, loading, isLogin});
+
   const onLoginPress = () => {
     try {
       emailValidator();
       passwordValidator();
       if (emailError == '' && passwordError == '') {
-        loginWorker({
-          variables: {
-            email: email,
-            password: password,
-          },
-        });
+        dispatch(
+          loginAction({
+            email,
+            password,
+          }),
+        );
       }
     } catch (err) {
       console.log(err);
@@ -85,7 +86,7 @@ const Login = ({navigation}) => {
           error={passwordError}
           secureTextEntry={true}
         />
-        {loading ? (
+        {!loading ? (
           <RButtonLoading />
         ) : (
           <RButton onPress={() => onLoginPress()} title="Login" />
