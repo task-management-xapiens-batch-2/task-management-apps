@@ -5,13 +5,18 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 const Splash = ({navigation}) => {
   useEffect(async () => {
-    const rawDataUser = await AsyncStorage.getItem('data');
-    const dataUser = JSON.parse(rawDataUser);
-    console.log({dataUser});
-    setTimeout(()=>{
-      dataUser.login?navigation.navigate('Tabs'):navigation.navigate('Login')
-    },3000)
-  },[]);
+    const isLogin = await AsyncStorage.getItem('isLogin');
+    if (isLogin) {
+      setTimeout(() => {
+        navigation.navigate('Tabs');
+      }, 3000);
+    } else {
+      setTimeout(() => {
+        navigation.navigate('Login');
+      }, 3000);
+    }
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.topIcon} />
