@@ -7,44 +7,40 @@ const QUERY_USERS = gql`
     }
   }
 `;
-// const QUERY_TASKS = (id) => gql`
-//   query MyQuery {
-//     task(where: {Users: {userId: {_eq: ${id}}}}) {
-//       taskId
-//       userId
-//       taskStatus
-//       taskName
-//       taskExpired
+// const QUERY_TASKS = gql`
+//   query listTask($assignee:Int!) {
+//     listTaskWorker(assignee:$assignee){
+//       id,
+//       project_id,
+//       assignee,
+//       title,
+//       description,
+//       start_date,
+//       due_date,
+//       attachment,
+//       status,
+//       is_read
 //     }
 //   }
 // `;
-// const QUERY_DELETE_TASK = (userId, taskId) => gql`
-//   mutation MyMutation {
-//     delete_task(where: {Users: {userId: {_eq: ${userId}}, Task: {taskId: {_eq: ${taskId}}}}}) {
-//       returning {
-//         taskName
-//         taskStatus
-//         taskId
-//         taskExpired
-//         userId
-//       }
-//     }
-//   }
-// `;
-// const QUERY_UPDATE_TASK = (userId) => gql`
-//   mutation MyMutation {
-//     update_task(where: {Users: {userId: {_eq: ${userId}}}}) {
-//       affected_rows
-//       returning {
-//         taskStatus
-//       }
-//     }
-//   }
-// `;
-const QUERY_CREATE_TASK = (id) => gql``;
 
-export {
-  QUERY_USERS
-};
+const QUERY_TASKS = gql`
+  query{
+    findAllTask{
+      id,
+      project_id,
+      assignee,
+      title,
+      description,
+      start_date,
+      due_date,
+      attachment,
+      status,
+      is_read
+    }
+  }
+`;
+
+export {QUERY_USERS, QUERY_TASKS};
 
 export default {};
