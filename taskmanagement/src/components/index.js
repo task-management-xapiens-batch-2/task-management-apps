@@ -8,9 +8,13 @@ import {
   ActivityIndicator,
   ScrollView,
   Button,
+  Modal,
 } from 'react-native';
+import {BarIndicator} from 'react-native-indicators';
 import CustomIcon from 'react-native-vector-icons/SimpleLineIcons';
+import CustomIconFA from 'react-native-vector-icons/FontAwesome';
 import IconTabs from 'react-native-vector-icons/FontAwesome';
+
 const RColor = {
   orange: '#F3AE46',
   lightBlue: '#D4F3FD',
@@ -53,7 +57,12 @@ const RHeaderMain = props => {
   return (
     <View style={styles.containerHeaderMain}>
       <Text style={{color: RColor.white}}>Hello</Text>
-      <Text style={styles.headerTitleMain}>{props.title}</Text>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Text style={styles.headerTitleMain}>{props.title}</Text>
+        <TouchableOpacity style={{marginLeft: 5}} onPress={props.onPressLogout}>
+          <CustomIconFA color={RColor.green} name="caret-down" size={30} />
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity
         onPress={props.onPress}
         style={{position: 'absolute', right: '20%'}}>
@@ -80,8 +89,8 @@ const RDetailCard = props => {
     <View style={[styles.containerDetailCard, props.CardStyle]}>
       {props.loading ? (
         <View style={styles.loadingContainer}>
-          <View style={styles.loading}>
-            <Text style={styles.loadingText}>{(4 / 5) * 100} %</Text>
+          <View style={[styles.loading, props.CStyle]}>
+            <Text style={styles.loadingText}>{props.loadingText} %</Text>
           </View>
         </View>
       ) : (
@@ -125,7 +134,12 @@ const RHeader = props => {
 const RLoader = props => {
   return (
     <View style={[{alignSelf: 'center'}, props.styleLoader]}>
-      <ActivityIndicator size={props.size} color={RColor.blue} />
+      <BarIndicator
+        style={{maxHeight: 40}}
+        size={props.size}
+        color={RColor.blue}
+        animating
+      />
       <Text style={{color: RColor.blue, fontWeight: 'bold'}}>
         {props.title}
       </Text>
@@ -184,8 +198,33 @@ const RIcon = props => {
     />
   );
 };
-
+const RModalLogout = () => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text>Are you sure want to Logout from your current account ?</Text>
+          <View style={styles.containerModalBtn}>
+            <TouchableOpacity style={styles.btnCancelModal}>
+              <Text style={styles.txtModal}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btnLogoutModal}>
+              <Text style={styles.txtModal}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 export {
+  RModalLogout,
   RHeaderMain,
   RHeader,
   RButtonLoading,
@@ -211,7 +250,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loading: {
-    width: `${(4 / 5) * 100}%`,
     height: 15,
     borderRadius: 15 / 2,
     backgroundColor: RColor.blue,
@@ -219,7 +257,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   loadingText: {
-    color: RColor.white,
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -231,11 +268,12 @@ const styles = StyleSheet.create({
   },
   // CARD DETAIL
   containerDetailCard: {
-    marginTop: '10%',
-    marginLeft: '5%',
-    marginRight: '5%',
-    marginBottom: '5%',
-    borderRadius: 20,
+    // marginTop: '10%',
+    // marginLeft: '5%',
+    // marginRight: '5%',
+    // marginBottom: '5%',
+    // borderRadius: 20,
+    flex: 1,
     alignItems: 'center',
     paddingTop: 40,
     paddingLeft: '5%',
@@ -309,6 +347,55 @@ const styles = StyleSheet.create({
   },
   txtTilte: {
     fontSize: 18,
+    fontWeight: 'bold',
+    color: RColor.white,
+  },
+  // MODAL
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    width: '80%',
+    height: 120,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 20,
+    padding: 35,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  containerModalBtn: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 0,
+  },
+  btnCancelModal: {
+    flex: 1,
+    height: 30,
+    right: 2,
+    backgroundColor: RColor.orange,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnLogoutModal: {
+    flex: 1,
+    height: 30,
+    left: 2,
+    backgroundColor: RColor.green,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txtModal: {
+    fontSize: 14,
+    lineHeight: 14,
     fontWeight: 'bold',
     color: RColor.white,
   },
