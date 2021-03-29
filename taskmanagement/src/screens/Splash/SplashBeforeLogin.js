@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {RColor} from '@reusable';
-import AsyncStorage from '@react-native-community/async-storage';
 
 const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('Tabs');
+      navigation.navigate('Login');
     }, 3000);
   }, []);
 

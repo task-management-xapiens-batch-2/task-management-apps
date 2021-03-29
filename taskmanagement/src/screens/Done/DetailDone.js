@@ -2,7 +2,8 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {RHeader, RColor, RDetailCard} from '@reusable';
 const DetailDone = ({navigation, route}) => {
-  const {pId, title, description, sDate, dDate} = route.params;
+  const {id, title, description, start_date, due_date} = route.params;
+
   return (
     <View style={styles.container}>
       <RHeader
@@ -14,9 +15,9 @@ const DetailDone = ({navigation, route}) => {
       <RDetailCard
         title={title}
         description={description}
-        sDate={sDate}
-        dDate={dDate}
-        CardStyle={{flex:1}}
+        sDate={start_date}
+        dDate={due_date}
+        CardStyle={{flex: 1}}
         attachments
       />
     </View>
@@ -27,7 +28,8 @@ export default DetailDone;
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     backgroundColor: RColor.lightBlue,
   },
+
 });

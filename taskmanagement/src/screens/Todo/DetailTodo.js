@@ -8,26 +8,14 @@ import {
   RDetailCard,
   RButton,
 } from '@reusable';
-import {useMutation} from '@apollo/client';
-import {UPDATE_STATUS_TASK} from '@config';
+import {useMutation, useQuery} from '@apollo/client';
+import {SET_STATUS} from '@config';
 
 const DetailTodo = ({navigation, route}) => {
-  const {
-    id,
-    project_id,
-    assignee,
-    title,
-    description,
-    start_date,
-    due_date,
-    attachment,
-    status,
-    is_read,
-  } = route.params;
+  const {id, title, description, start_date, due_date} = route.params;
 
-  const [updateStatusTask, {data, loading, error}] = useMutation(
-    UPDATE_STATUS_TASK,
-  );
+  const [updateStatusTask, {data, loading, error}] = useMutation(SET_STATUS);
+
   console.log({data, loading, error});
   return (
     <View style={styles.container}>
@@ -45,25 +33,24 @@ const DetailTodo = ({navigation, route}) => {
       />
 
       {loading ? (
-        <RButtonLoading CStyle={styles.btnColorDoing} />
+        <RButtonLoading CStyle={styles.btnStyle} />
       ) : (
         <RButton
           title="MAKE IT DOING"
-          onPress={()=>updateStatusTask({
-            variables: {
-              id: id,
-              project_id: project_id,
-              assignee: assignee,
-              title: title,
-              description: description,
-              start_date: start_date,
-              due_date: due_date,
-              attachment: attachment,
-              status: 'doing',
-              is_read: is_read,
-            },
-          })}
-          CStyle={styles.btnColorDoing}
+          CStyle={styles.btnStyle}
+          onPress={() => {
+            updateStatusTask({
+              variables: {
+                id: id,
+                status: 'doing',
+              },
+            });
+            if (data) {
+              if (data.status == 'doing') {
+                navigation.navigate('Doing');
+              }
+            }
+          }}
         />
       )}
     </View>
@@ -77,8 +64,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: RColor.lightBlue,
   },
-  btnColorDoing: {
-    backgroundColor: RColor.orange,
+  btnStyle: {
     marginBottom: 20,
+    position: 'absolute',
+    bottom: 20,
+    backgroundColor: RColor.orange,
   },
 });

@@ -1,52 +1,66 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {RHeader, RLoader, RColor, RIcon} from '@reusable';
-import {useLazyQuery, useQuery} from '@apollo/client';
-import {QUERY_TASKS} from '@config';
-import AsyncStorage from '@react-native-community/async-storage';
+import {RHeader, RLoader, RColor} from '@reusable';
+import {useMutation, useQuery} from '@apollo/client';
+import {QUERY_TASKS, SET_ISREAD} from '@config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage';
 const Inbox = ({navigation}) => {
-  const {data, error} = useQuery(QUERY_TASKS);
-  // const [taskList, {data, error}] = useLazyQuery(QUERY_TASKS);
-  // useEffect(async () => {
-  //   const rawDataUser = await AsyncStorage.getItem('data');
-  //   const dataUser = JSON.parse(rawDataUser);
-  //   if (dataUser !== null) {
-  //     taskList({
-  //       variables: {
-  //         assignee: dataUser.data.id,
-  //       },
-  //     });
-  //   } else {
-  //     console.log({error});
-  //   }
-  // }, []);
+  const {data, loading, error, refetch} = useQuery(QUERY_TASKS);
+  const [updateIsRead, {data: dataIsread, error: errorIsRead}] = useMutation(
+    SET_ISREAD,
+  );
+  useEffect(()=>{
+    refetch()
+  },[])
 
   const RCard = ({item}) => {
     return (
       <TouchableOpacity
         onPress={() => {
+          updateIsRead({
+            variables: {
+              id: item.id,
+            },
+          });
           navigation.navigate('Detail Inbox', {
             id: item.id,
             project_id: item.project_id,
-            assignee: item.assignee,
             title: item.title,
             description: item.description,
             start_date: item.start_date,
             due_date: item.due_date,
-            attachment: item.attachment,
-            status: item.status,
-            is_read: item.is_read,
           });
         }}
         style={styles.containerCard}>
         <View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}>
+            <Text
+              style={[
+                styles.txtTitle,
+                {color: item.is_read ? RColor.gray : 'black'},
+              ]}>
+              Project ID :{item.project_id}
+            </Text>
+            <Text
+              style={[
+                styles.txtTitle,
+                {color: item.is_read ? RColor.gray : 'black'},
+              ]}>
+              0/2
+            </Text>
+          </View>
           <Text
             style={[
               styles.txtTilteCard,
               {
-                fontWeight: isRead ? 'normal' : 'bold',
-                color: isRead ? RColor.gray : 'black',
+                fontWeight: item.is_read ? 'normal' : 'bold',
+                color: item.is_read ? RColor.gray : 'black',
               },
             ]}>
             {item.title.length > 25
@@ -68,20 +82,19 @@ const Inbox = ({navigation}) => {
         title={'Inbox'}
         iconName={'arrow-left'}
       />
-      {data ? (
+      {loading ? (
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <RLoader size={30} title={'Load All Inbox....'} />
+        </View>
+      ) : (
         <>
-          <Text style={styles.txtTitle}> Task Title 0/2</Text>
           <FlatList
             // .filter(f => f.status == 'approved')
-            data={data.findAllTask}
+            data={data.findAllTaskWorker}
             renderItem={RCard}
             keyExtractor={item => item.id.toString()}
           />
         </>
-      ) : (
-        <View style={{flex: 1, justifyContent: 'center'}}>
-          <RLoader size={30} title={'Load All Inbox....'} />
-        </View>
       )}
     </View>
   );
@@ -91,23 +104,18 @@ export default Inbox;
 
 const styles = StyleSheet.create({
   txtTitle: {
-    marginLeft: '5%',
-    marginTop: 10,
-    marginBottom: 10,
     fontWeight: 'bold',
   },
   containerCard: {
-    width: '90%',
+    width: '100%',
     height: 90,
-    borderRadius: 15,
+    borderBottomColor: RColor.gray,
+    borderBottomWidth: 1,
     paddingLeft: 30,
     paddingRight: 30,
-    marginBottom: 10,
     backgroundColor: RColor.white,
     alignSelf: 'center',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
+    justifyContent: 'center',
   },
   txtTilteCard: {
     fontSize: 16,

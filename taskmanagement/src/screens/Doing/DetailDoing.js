@@ -8,8 +8,11 @@ import {
   RDetailCard,
   RButton,
 } from '@reusable';
+import {useMutation, useQuery} from '@apollo/client';
+import {SET_STATUS} from '@config';
 const DetailDoing = ({navigation, route}) => {
-  const {pId, title, description, sDate, dDate} = route.params;
+  const {id, title, description, start_date, due_date} = route.params;
+  const [updateStatusTask, {data, loading, error}] = useMutation(SET_STATUS);
   return (
     <View style={styles.container}>
       <RHeader
@@ -21,14 +24,54 @@ const DetailDoing = ({navigation, route}) => {
       <RDetailCard
         title={title}
         description={description}
-        sDate={sDate}
-        dDate={dDate}
-        CardStyle={{flex:1}}
+        sDate={start_date}
+        dDate={due_date}
+        CardStyle={{flex: 1}}
         attachments={true}
-
       />
-      <RButton title="MAKE IT TODO" />
-      <RButton title="MAKE IT DONE" CStyle={styles.btnColorDone} />
+      {loading ? (
+        <RButtonLoading CStyle={styles.btnStyle} />
+      ) : (
+        <RButton
+          title="MAKE IT TODO"
+          CStyle={styles.btnStyle}
+          onPress={() => {
+            updateStatusTask({
+              variables: {
+                id: id,
+                status: 'todo',
+              },
+            });
+            if (data) {
+              if (data.status == 'todo') {
+                navigation.navigate('Todo');
+              }
+            }
+          }}
+        />
+      )}
+
+      {loading ? (
+        <RButtonLoading CStyle={styles.btnColorDone} />
+      ) : (
+        <RButton
+          title="MAKE IT DONE"
+          CStyle={styles.btnColorDone}
+          onPress={() => {
+            updateStatusTask({
+              variables: {
+                id: id,
+                status: 'done',
+              },
+            });
+            if (data) {
+              if (data.status == 'done') {
+                navigation.navigate('Done');
+              }
+            }
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -40,9 +83,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: RColor.lightBlue,
   },
+  btnStyle: {
+    position: 'absolute',
+    bottom: 80,
+  },
   btnColorDone: {
     backgroundColor: RColor.green,
-    marginBottom:20,
-    marginTop:20,
+    bottom: 20,
+    position: 'absolute',
   },
 });
