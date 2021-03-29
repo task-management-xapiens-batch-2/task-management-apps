@@ -7,36 +7,19 @@ const QUERY_USERS = gql`
     }
   }
 `;
-// const QUERY_TASKS = gql`
-//   query listTask($assignee:Int!) {
-//     listTaskWorker(assignee:$assignee){
-//       id,
-//       project_id,
-//       assignee,
-//       title,
-//       description,
-//       start_date,
-//       due_date,
-//       attachment,
-//       status,
-//       is_read
-//     }
-//   }
-// `;
 
 const QUERY_TASKS = gql`
-  query{
-    findAllTask{
-      id,
-      project_id,
-      assignee,
-      title,
-      description,
-      start_date,
-      due_date,
-      attachment,
-      status,
-      is_read
+  query findWorker {
+    findAllTaskWorker {
+      id
+      project_id
+      title
+      assignee
+      description
+      start_date
+      due_date
+      status
+      attachment
     }
   }
 `;
