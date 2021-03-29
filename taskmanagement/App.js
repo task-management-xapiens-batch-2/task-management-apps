@@ -12,6 +12,7 @@ import {
   DetailDone,
   Inbox,
   DetailInbox,
+  SplashBeforeLogin,
 } from '@screens';
 import {GraphProvider} from '@config';
 import {NavigationContainer} from '@react-navigation/native';
@@ -106,17 +107,15 @@ const StackList = () => {
   const [login, setLogin] = useState(false);
   useEffect(async () => {
     const isLogin = await AsyncStorage.getItem('isLogin');
-    if(isLogin!==null){
+    if (isLogin !== null) {
       setLogin(true);
-      console.log({login});
-    }else{
-      setLogin(false)
-      console.log({login});
+    } else {
+      setLogin(false);
     }
   });
   return (
     <NavigationContainer>
-      {login? (
+      {login ? (
         <Stack.Navigator>
           <Stack.Screen
             name="Splash"
@@ -179,11 +178,11 @@ const StackList = () => {
 
 const App = () => {
   return (
-    <View style={{flex: 1}}>
+    // <View style={{flex: 1}}>
       <GraphProvider>
         <StackList />
       </GraphProvider>
-    </View>
+    // </View>
   );
 };
 
